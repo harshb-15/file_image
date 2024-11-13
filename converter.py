@@ -10,13 +10,16 @@ def create_image_with_text_data(text, output_image_path):
     # Convert text to binary
     binary_data = text_to_binary(text)
     
-    # Create an array of random pixels (for visual randomness)
-    width, height = 100, 100  # Define dimensions of the image
-    img_array = np.random.randint(0, 256, (height, width, 3), dtype=np.uint8)
+    # Calculate required dimensions for the image
+    length = len(binary_data)
+    width = int(np.ceil(length ** 0.5))  # Square root for roughly equal width and height
+    height = int(np.ceil(length / width))  # Calculate height based on width
 
-    # Embed binary data into pixels (for simplicity, use first few pixels)
-    for i in range(min(len(binary_data), width * height)):
-        # Set pixel color based on binary data (0 or 1)
+    # Create an array for the image with optimized size
+    img_array = np.zeros((height, width, 3), dtype=np.uint8)
+
+    # Embed binary data into pixels
+    for i in range(length):
         if binary_data[i] == '1':
             img_array[i // width, i % width] = [255, 255, 255]  # White for '1'
         else:
